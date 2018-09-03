@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <title>DEMO</title>
+</head>
+
+<body>
+    <h1 style="text-align: center;">DEMO</h1>
+    <div class="container">
+        <button type="button" onclick="callScannerWithCallback()">扫码</button>
+        <button type="button" onclick="callAddressBookWithCallback()">获取通讯录</button>
+    </div>
+</body>
+
+<script>
+    function connectToSwiftWebViewBridge(callback) {
+        if (window.SwiftWebViewBridge) {
+            callback(SwiftWebViewBridge);
+        } else {
+            document.addEventListener('SwiftWebViewBridgeReady', function() {
+                callback(SwiftWebViewBridge);
+            }, false);
+        }
+    }
+
+    connectToSwiftWebViewBridge(function(bridge) {
+        bridge.init(function(message, responseCallback) {
+            var data = {
+                'JS Responds': 'Message received = )'
+            };
+            responseCallback(data);
+        });
+    });
+
+    function callScannerWithCallback() {
+        SwiftWebViewBridge.callSwiftHandler("scanner", {},
+            function(responseData) {
+                if (responseData && responseData.success && responseData.data) {
+                    alert(responseData.data);
+                } else {
+                    alert("未知数据");
+                }
+            })
+    }
+
+    function callAddressBookWithCallback() {
+        SwiftWebViewBridge.callSwiftHandler("addressBook", {},
+            function(responseData) {
+                if (responseData && responseData.success && responseData.data) {
+                    alert(responseData.data);
+                } else {
+                    alert("未知数据");
+                }
+            })
+    }
+</script>
+
+<style>
+    .container button {
+        display: block;
+        height: 39px;
+        width: 80%;
+        margin-left: auto;
+        margin-right: auto;
+        margin-top: 50px;
+        border: #cccccc;
+        border-radius: 5px;
+        margin-bottom: 50px;
+        background-color: rgb(0, 153, 255);
+        text-align: center;
+        color: white;
+        font-size: 15px;
+    }
+</style>
+
+</html>
